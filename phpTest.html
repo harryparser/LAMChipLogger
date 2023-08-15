@@ -1,0 +1,341 @@
+<!-- Code a submit button that when pressed, inputs the value of the hello variable which then gets appended to log.txt-->
+
+<!-- Path: phpTest.html -->
+
+
+<!-- Path: phpTest.html -->
+<DOCTYPE html>
+    <html>
+        <head>
+            <title>LAM Chip Logger Ver 1.0</title>
+            
+            <style>
+                .types { 
+                display: none;
+                }
+            
+                #video {
+                    border: 1px solid black;
+                    width: 320px;
+                    height: 240px;
+                }
+            
+                #photo {
+                    border: 1px solid black;
+                    width: 320px;
+                    height: 240px;
+                }
+            
+                #canvas {
+                    display: none;
+                }
+            
+                .camera {
+                    width: 340px;
+                    display: inline-block;
+                }
+            
+                .output {
+                    width: 340px;
+                    display: inline-block;
+                }
+            
+                #startbutton {
+                    display: block;
+                    position: relative;
+                    margin-left: 120;
+                    margin-right: auto;
+                    bottom: 36px;
+                    padding: 5px;
+                    background-color: #6a67ce;
+                    border: 1px solid rgba(255, 255, 255, 0.7);
+                    font-size: 14px;
+                    color: rgba(255, 255, 255, 1.0);
+                    cursor: pointer;
+                }
+            
+                .contentarea {
+                    font-size: 16px;
+                    font-family: Arial;
+                    text-align: left;
+                }
+            </style>
+        </head>
+        <body>
+
+            <h1>LAM Chip Logger Ver 1.0</h1>
+
+            <form method = "post">
+                <script>
+                    // get date and set to variable
+                    var today = new Date();
+                    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+                    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+                    var hello =  date + ", " + time;
+                    document.write("<input type = 'hidden' name = 'hello' value = '" + hello + "'>");
+                </script>
+
+                <script>
+                    // get Month & Year to place at the end of text file name
+                    var today = new Date();
+                    var currentMonthYear = today.getFullYear()+'-'+(today.getMonth()+1);
+
+                    document.write("<input type = 'hidden' name = 'currentMonthYear' value = '" + currentMonthYear + "'>");
+                </script>
+
+                <label for="EmployeeID">Employee ID:</label>
+                <input type="text" id="EmployeeID" name="EmployeeID" pattern="[0-9]{6}" required>
+
+                <!-- Underneath the textbox asking for employee ID, create a textbox Asking for Project Code -->
+                <!-- Input must be less than 10 characters -->
+                <br><br>
+                <label for="ProjectCode">Project Code:</label>
+                <input type="text" id="ProjectCode" name="ProjectCode" maxlength="10" required>
+
+                <!-- Textbox Asking for Task Number -->
+                <br><br>
+                <label for="TaskNumber">Task Number:</label>
+                <input type="text" id="TaskNumber" name="TaskNumber" maxlength="10" required>
+                
+                <!-- Dropdown menu asking "Which Cabinet" with two choices: G03 or G04-->
+                <!-- Only one choice can be selected at a time -->
+                <br><br>
+                <label for="WhichCabinet">Which Cabinet:</label>
+                <select id="WhichCabinet" name="WhichCabinet" required>
+                    <option value="G03">G03</option>
+                    <option value="G04">G04</option>
+                </select>
+                
+                <!-- Label that says "Action Type: " followed by Three bubble options labeled the following - Register, Pick up, or Drop Off -->
+                <!-- Only one bubble can be selected at a time -->
+                <br><br>
+                <label for="ActionType">Action Type:</label>
+                <input type="radio" id="Register" name="ActionType" value="Register" required>
+                <label for="Register">Register</label>
+                <input type="radio" id="PickUp" name="ActionType" value="PickUp" required>
+                <label for="PickUp">Pick Up</label>
+                <input type="radio" id="DropOff" name="ActionType" value="DropOff" required>
+                <label for="DropOff">Drop Off</label>
+                <input type="radio" id="Shipping" name="ActionType" value="Shipping" required>
+                <label for="Shipping">Shipping - Specify if Nanolab or Customer in Comments</label>
+
+                <!-- Textbox with Dropdown Menu that corresponds to the input chosen-->
+                <br><br>
+                <script src="jquery.min.js"></script>
+
+                <script>
+                    $(document).ready(function() {
+                      $("#elementreg").on("change", function() {
+                        var val = $(this).val();
+                  
+                        // Hide all divs first
+                        $('.types').hide();
+                  
+                        // Show divs less than or equal to the selected value
+                        for (var i = 1; i <= val; i++) {
+                          $(`#${i}`).show();
+                        }
+                      });
+                    });
+                </script>
+
+
+                <label for="How Many Chips">How Many Chips?:</label>
+
+                <select class="medium" id="elementreg" name="youare">
+                <option value="" selected="selected"></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                </select>
+
+                <div class="types" id="1">
+                    <input type="text" id="FirstChipID" name="FirstChipID">
+                </div>
+
+                <div class="types" id="2">
+                    <input type="text" id="SecondChipID" name="SecondChipID">
+                </div>
+
+                <div class="types" id="3">
+                    <input type="text" id="ThirdChipID" name="ThirdChipID">
+                </div>
+
+                <div class="types" id="4">
+                    <input type="text" id="FourthChipID" name="FourthChipID">
+                </div>
+
+                <!-- Taking Image of Chip Containers -->
+                <br><br>
+
+                <input type="hidden" name="photo" value="">
+
+                <div class="contentarea">
+                    <label for="Container Image">Chip Container Images (Take Picture with Chip Exposed for Already Opened Containers):</label>
+                    <br><br>
+                    <div class="camera">
+                        <video id="video">Video stream not available.</video>
+                    </div>
+                    <div><button id="startbutton">Take photo</button></div>
+                    <canvas id="canvas"></canvas>
+                    <div class="output">
+                        <img id="photo" alt="The screen capture will appear in this box.">
+                    </div>
+                </div>
+
+                <script defer>
+                    /* JS comes here */
+                    (function() {
+
+                    var width = 320; // We will scale the photo width to this
+                    var height = 0; // This will be computed based on the input stream
+
+                    var streaming = false;
+
+                    var video = null;
+                    var canvas = null;
+                    var photo = null;
+                    var startbutton = null;
+
+                    function startup() {
+                        video = document.getElementById('video');
+                        canvas = document.getElementById('canvas');
+                        photo = document.getElementById('photo');
+                        startbutton = document.getElementById('startbutton');
+
+                        navigator.mediaDevices.getUserMedia({
+                                video: true,
+                                audio: false
+                            })
+                            .then(function(stream) {
+                                video.srcObject = stream;
+                                video.play();
+                            })
+                            .catch(function(err) {
+                                console.log("An error occurred: " + err);
+                            });
+
+                        video.addEventListener('canplay', function(ev) {
+                            if (!streaming) {
+                                height = video.videoHeight / (video.videoWidth / width);
+
+                                if (isNaN(height)) {
+                                    height = width / (4 / 3);
+                                }
+
+                                video.setAttribute('width', width);
+                                video.setAttribute('height', height);
+                                canvas.setAttribute('width', width);
+                                canvas.setAttribute('height', height);
+                                streaming = true;
+                            }
+                        }, false);
+
+                        startbutton.addEventListener('click', function(ev) {
+                            takepicture();
+                            ev.preventDefault();
+                        }, false);
+
+                        clearphoto();
+                    }
+
+                    function clearphoto() {
+                        var context = canvas.getContext('2d');
+                        context.fillStyle = "#AAA";
+                        context.fillRect(0, 0, canvas.width, canvas.height);
+
+                        var data = canvas.toDataURL('image/png');
+                        photo.setAttribute('src', data);
+                    }
+
+                    function takepicture() {
+                        var context = canvas.getContext('2d');
+                        if (width && height) {
+                            canvas.width = width;
+                            canvas.height = height;
+                            context.drawImage(video, 0, 0, width, height);
+
+                            var data = canvas.toDataURL('image/png');
+                            photo.setAttribute('src', data);
+                            document.querySelector('input[name="photo"]').value = data;
+                        } else {
+                            clearphoto();
+                        }
+                    }
+
+                    window.addEventListener('load', startup, false);
+                })();
+                </script>
+
+                <!-- Textbox Input for Comments -->
+                <br><br>
+                <label for="Comments">Comments:</label>
+                <input type="textarea" id="Comments" name="Comments">
+
+                <br><br>
+                <input type = "submit" value = "submit">
+
+            </form>
+        </body>
+    </html>
+
+<?php
+    //Get the values of the regular Impants
+    $hello = $_POST["hello"];
+    $EmployeeID = $_POST["EmployeeID"];
+    $ProjectCode = $_POST["ProjectCode"];
+    $TaskNumber = $_POST["TaskNumber"];
+    $WhichCabinet = $_POST["WhichCabinet"];
+    $ActionType = $_POST["ActionType"];
+    $currentMonthYear = $_POST["currentMonthYear"];
+    $Numberofchips = $_POST["youare"];
+
+    //Get the value of the First Chip ID, Second Chip ID, Third Chip ID, and Fourth Chip ID inputs
+    $FirstChipID = "";
+    $SecondChipID = "";
+    $ThirdChipID = "";
+    $FourthChipID = "";
+
+    if (!empty($_POST["FirstChipID"])) {
+        $FirstChipID = $_POST["FirstChipID"] . "| ";
+    }
+
+    if (!empty($_POST["SecondChipID"])) {
+        $SecondChipID = $_POST["SecondChipID"] . "| ";
+    }
+
+    if (!empty($_POST["ThirdChipID"])) {
+        $ThirdChipID = $_POST["ThirdChipID"] . "| ";
+    }
+
+    if (!empty($_POST["FourthChipID"])) {
+        $FourthChipID = $_POST["FourthChipID"] . "| ";
+    }
+
+    //Create a variable for the photo
+    $photo = $_POST['photo'];
+
+    //Create a variable for Comments
+    $Comments = "";
+    if (!empty($_POST["Comments"])) {
+        $Comments = $_POST["Comments"] . ", ";;
+    } else {
+        $Comments = "... " . ", ";
+    }
+
+    $file = fopen($currentMonthYear . ".csv", "a");
+    
+    //Add column headers to the csv file when the file is created
+    if (filesize($currentMonthYear . ".csv") == 0) {
+        fwrite($file, "Date, Time, Employee ID, Project Code, Task Number, Which Cabinet, Action Type, Number of Chips, Chip IDs, Comments, DataType, PhotoURL\n");
+    }
+
+    fwrite($file, $hello . ", " . $EmployeeID . ", " . $ProjectCode 
+            . ", " . $TaskNumber . ", " . $WhichCabinet . ", " . $ActionType . ", " . $Numberofchips . ", " . $FirstChipID 
+            . $SecondChipID . $ThirdChipID . $FourthChipID . ", " . $Comments . $photo . "\n");
+    fclose($file);
+?>
+
+
